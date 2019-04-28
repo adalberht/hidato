@@ -1,4 +1,7 @@
 import React from 'react';
+
+import HidatoGrid from './HidatoGrid';
+
 import './App.css';
 
 function App() {
@@ -6,7 +9,9 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Hidato</h1>
+        <h2>Standard Square-shaped</h2>
       </header>
+      <HidatoGrid />
     </div>
   );
 }
