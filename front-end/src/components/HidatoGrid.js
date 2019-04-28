@@ -38,6 +38,10 @@ function getNonEmptyVisiblePoints(points) {
   }, []);
 }
 
+function getSetOfInputtedValues(points) {
+  return new Set(getNonEmptyVisiblePoints(points).map(point => point.value));
+}
+
 function HidatoGrid() {
   const [points, setState] = useState(generateInitialPoints());
   return (
@@ -72,6 +76,7 @@ function HidatoGrid() {
                     setState(newPoints);
                   }}
                   {...cell}
+                  uniqueValues={getSetOfInputtedValues(points)}
                 />
               ))
             ),
