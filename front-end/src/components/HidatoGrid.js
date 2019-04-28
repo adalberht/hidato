@@ -45,8 +45,8 @@ function HidatoGrid() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(8, 2rem)",
-          gridTemplateRows: "repeat(8, 2rem)"
+          gridTemplateColumns: "repeat(8, 2.5rem)",
+          gridTemplateRows: "repeat(8, 2.5rem)"
         }}
       >
         {points.reduce(

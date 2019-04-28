@@ -9,16 +9,29 @@ function HidatoCell(props) {
     }
     return "white";
   }
+
+  function getFontColor() {
+    if (props.value == 1 || props.value == 40) {
+      return "white";
+    } else if (false) {
+      return "black";
+    } else {
+      return "green";
+    }
+  }
+
   return (
     <input
       key={`hidato-cell-${props.row}-${props.column}`}
       className="hidato-cell"
       style={{
-        "text-align": "center",
+        textAlign: "center",
         border: "1px solid gray",
         visibility: props.visible ? "visible" : "hidden",
         backgroundColor: getBackgroundColor(),
-        transition: "all 0.5s"
+        transition: "all 0.5s",
+        fontSize: "1.2rem",
+        color: getFontColor()
       }}
       value={props.value}
       onChange={e => {
