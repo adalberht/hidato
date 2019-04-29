@@ -39,7 +39,25 @@ function getNonEmptyVisiblePoints(points) {
 }
 
 function getSetOfInputtedValues(points) {
-  return new Set(getNonEmptyVisiblePoints(points).map(point => point.value));
+  return new Set(points.map(point => point.value));
+}
+
+function solveHidato(points) {
+  const uniqueValues = getSetOfInputtedValues(points);
+  console.log(uniqueValues, points);
+  if (uniqueValues.size !== points.length) {
+    window.alert("Input should be unique. There is duplicate element");
+    return;
+  }
+  points.sort((a, b) => a.value - b.value);
+  console.log(points);
+  if (
+    points.length < 2 ||
+    points[0].value !== 1 ||
+    points[points.length - 1].value !== 40
+  ) {
+    window.alert("Please input 1 and 40");
+  }
 }
 
 function HidatoGrid() {
@@ -76,7 +94,6 @@ function HidatoGrid() {
                     setState(newPoints);
                   }}
                   {...cell}
-                  uniqueValues={getSetOfInputtedValues(points)}
                 />
               ))
             ),
@@ -104,18 +121,6 @@ function HidatoGrid() {
       </div>
     </React.Fragment>
   );
-}
-
-function solveHidato(points) {
-  points.sort((a, b) => a.value - b.value);
-  console.log(points);
-  if (
-    points.length < 2 ||
-    points[0].value !== 1 ||
-    points[points.length - 1].value !== 40
-  ) {
-    window.alert("Please input 1 and 40");
-  }
 }
 
 export default HidatoGrid;

@@ -40,11 +40,6 @@ function HidatoCell(props) {
         const num = Number(e.target.value);
 
         if (val === "" || (Number.isInteger(num) && num >= 1 && num <= 40)) {
-          console.log(props.uniqueValues);
-          if (props.uniqueValues.has(num)) {
-            window.alert("Input should be unique.");
-            return;
-          }
           props.callback(e.target.value);
         } else {
           window.alert(
