@@ -102,4 +102,3 @@ input_data :-
     assert(ans(7, 6, 23)),
     assert(ans(7, 7, 22)),
     assert(ans(8, 8, 21)).
-    
