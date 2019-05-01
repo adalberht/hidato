@@ -1,31 +1,6 @@
-:- dynamic memo/3.
-:- dynamic ans/3.
-
-move(-1, -1).
-move(-1, 0).
-move(-1, 1).
-move(0, -1).
-move(0, 1).
-move(1, -1).
-move(1, 0).
-move(1, 1).
-
-valid(R, C) :-
-    1 =< R, R =< 8,
-    1 =< C, C =< 8.
-
-grid(R, C) :-
-    C =< 2, !, R =< 5.
-grid(R, C) :-
-    C =< 4, !, R =< 6.
-grid(R, 5) :-
-    !, R =< 7.
-grid(R, 6) :-
-    !, 3 =< R, R =< 7.
-grid(R, 7) :-
-    !, 5 =< R.
-grid(R, 8) :-
-    !, 7 =< R.
+:- use_module(movement, [move/2]).
+:- use_module(validator, [valid/2, grid/2]).
+:- use_module(storage, [memo/3, ans/3, reader/0]).
 
 remove(40) :- !.
 
@@ -35,6 +10,7 @@ remove(Now) :-
     remove(Next).
 
 remove(_).
+
 
 iterate_ans(40) :- !.
 
@@ -48,6 +24,7 @@ iterate_ans(Now) :-
     assert(ans(R, C, Now)),
     Next is Now + 1,
     iterate_ans(Next).
+
 
 iterate(_, _, 41) :-
     iterate_ans(1), !.
@@ -78,27 +55,12 @@ iterate(R_now, C_now, Val_now) :-
     Val_next is Val_now + 1,
     iterate(R_next, C_next, Val_next), !.
 
+
 find_ans :-
     ans(R, C, 1),
     iterate(R, C, 1), !.
 
+
 clear :-
     retractall(memo(_, _, _)),
     retractall(ans(_, _, _)).
-
-input_data :-
-    assert(ans(1, 1, 38)),
-    assert(ans(1, 3, 40)),
-    assert(ans(1, 5, 6)),
-    assert(ans(2, 2, 39)),
-    assert(ans(2, 4, 7)),
-    assert(ans(3, 3, 11)),
-    assert(ans(4, 2, 1)),
-    assert(ans(4, 4, 9)),
-    assert(ans(5, 6, 17)),
-    assert(ans(6, 3, 31)),
-    assert(ans(6, 4, 27)),
-    assert(ans(7, 5, 25)),
-    assert(ans(7, 6, 23)),
-    assert(ans(7, 7, 22)),
-    assert(ans(8, 8, 21)).
