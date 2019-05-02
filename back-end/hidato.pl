@@ -13,7 +13,6 @@ remove(Now) :-
 
 remove(_).
 
-
 iterate_ans(40) :- !.
 
 iterate_ans(Now) :-
@@ -26,7 +25,6 @@ iterate_ans(Now) :-
     assert(ans(R, C, Now)),
     Next is Now + 1,
     iterate_ans(Next).
-
 
 iterate(_, _, 41) :-
     iterate_ans(1), !.
@@ -57,12 +55,10 @@ iterate(R_now, C_now, Val_now) :-
     Val_next is Val_now + 1,
     iterate(R_next, C_next, Val_next), !.
 
-
 find_ans :-
     ans(R, C, 1),
     iterate(R, C, 1), !,
     assert(solved).
-
 
 clear :-
     retractall(solved),
