@@ -5,7 +5,7 @@
 :- dynamic ans/3.
 :- dynamic filled/3.
 
-% belum pasti
+% buat test internal
 reader :-
     assert(filled(1, 1, 38)),
     assert(filled(1, 3, 40)),
