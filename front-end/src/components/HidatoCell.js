@@ -2,28 +2,28 @@ import React, { useState, useEffect } from "react";
 
 function HidatoCell(props) {
   function getBackgroundColor() {
-    if (props.value == 1 || props.value == 40) {
-      return "red";
-    } else if (props.fromInput) {
-      return "cyan";
+    if (props.val == 1 || props.val == 40) {
+      return "#d50000";
+    } else if (props.fromInput && props.val !== "") {
+      return "#4dd0e1";
     }
     return "white";
   }
 
   function getFontColor() {
-    if (props.value == 1 || props.value == 40) {
+    if (props.val == 1 || props.val == 40) {
       return "white";
-    } else if (false) {
-      return "black";
+    } else if (props.fromInput) {
+      return "#424242";
     } else {
       return "green";
     }
   }
-
   return (
     <input
-      key={`hidato-cell-${props.row}-${props.column}`}
+      key={`hidato-cell-${props.row}-${props.col}`}
       className="hidato-cell"
+      disabled={!props.fromInput && props.val !== ""}
       style={{
         textAlign: "center",
         border: "1px solid gray",
@@ -33,7 +33,7 @@ function HidatoCell(props) {
         fontSize: "1.2rem",
         color: getFontColor()
       }}
-      value={props.value}
+      value={props.val}
       onChange={e => {
         e.preventDefault();
         const val = e.target.value;

@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+
 import HidatoCell from "./HidatoCell";
 
 function generateInitialPoints() {
@@ -12,51 +14,90 @@ function generateInitialPoints() {
     { startX: 4, endX: 7 },
     { startX: 6, endX: 7 }
   ];
-  return pointRangeForEveryRow.map(({ startX, endX }, r) =>
-    new Array(8).fill(0).map((_, c) => ({
-      r: r,
-      c: c,
-      visible: c >= startX && c <= endX,
-      value: "",
+  return pointRangeForEveryRow.map(({ startX, endX }, row) =>
+    new Array(8).fill(0).map((_, col) => ({
+      row: row,
+      col: col,
+      visible: col >= startX && col <= endX,
+      val: "",
       fromInput: false
     }))
   );
 }
 
-function getNonEmptyVisiblePoints(points) {
-  return points.reduce((prev, curr) => {
-    const nonEmptyVisiblePoints = curr.filter(point => {
-      return point.visible && point.value != "";
+function getSetOfInputtedValues(points) {
+  return new Set(points.map(point => point.val));
+}
+
+async function solveHidato(points) {
+  function getNonEmptyVisiblePoints(points) {
+    return points.reduce((prev, curr) => {
+      const nonEmptyVisiblePoints = curr.filter(point => {
+        return point.visible && point.val != "";
+      });
+      return prev.concat(
+        nonEmptyVisiblePoints.map(point => ({
+          row: point.row + 1, // 1-indexed in back end
+          col: point.col + 1, // 1-indexed in back end
+          val: Number(point.val)
+        }))
+      );
+    }, []);
+  }
+
+  const spec = getNonEmptyVisiblePoints(points);
+
+  const uniqueValues = getSetOfInputtedValues(spec);
+
+  let valid = true;
+  if (uniqueValues.size !== spec.length) {
+    window.alert("Input should be unique. There is duplicate element");
+    valid = false;
+  }
+
+  spec.sort((a, b) => a.val - b.val);
+
+  if (spec.length < 15) {
+    window.alert("You should provide a minimum of 15 numbers");
+    valid = false;
+  }
+
+  if (spec[0].val !== 1 || spec[spec.length - 1].val !== 40) {
+    window.alert("Please input 1 and 40");
+    valid = false;
+  }
+
+  if (!valid) return points;
+
+  try {
+    const response = await axios.post("http://localhost:8000/solve", spec, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token"
+      }
     });
-    return prev.concat(
-      nonEmptyVisiblePoints.map(point => ({
-        r: point.r,
-        c: point.c,
-        value: Number(point.value)
+    console.log("Get response: ");
+    console.log(response);
+    const mat = new Array(8).fill(0).map(() => new Array(8).fill(0));
+    response.data.forEach((point, i) => {
+      mat[point.row - 1][point.col - 1] = point.val;
+    });
+
+    console.log(mat);
+    console.log(points);
+    points = points.map(row =>
+      row.map(point => ({
+        ...point,
+        val: mat[point.row][point.col]
       }))
     );
-  }, []);
-}
-
-function getSetOfInputtedValues(points) {
-  return new Set(points.map(point => point.value));
-}
-
-function solveHidato(points) {
-  const uniqueValues = getSetOfInputtedValues(points);
-  console.log(uniqueValues, points);
-  if (uniqueValues.size !== points.length) {
-    window.alert("Input should be unique. There is duplicate element");
-    return;
-  }
-  points.sort((a, b) => a.value - b.value);
-  console.log(points);
-  if (
-    points.length < 2 ||
-    points[0].value !== 1 ||
-    points[points.length - 1].value !== 40
-  ) {
-    window.alert("Please input 1 and 40");
+    return points;
+  } catch (e) {
+    window.alert("Error: " + e);
+    return points;
   }
 }
 
@@ -76,17 +117,17 @@ function HidatoGrid() {
             prev.concat(
               curr.map(cell => (
                 <HidatoCell
-                  key={`hidato-cell-${cell.r}-${cell.c}`}
-                  callback={newValue => {
+                  key={`hidato-cell-${cell.row}-${cell.col}`}
+                  callback={newVal => {
                     const newPoints = points.map((row, r) =>
-                      r !== cell.r
+                      r !== cell.row
                         ? row
                         : row.map((col, c) =>
-                            c !== cell.c
+                            c !== cell.col
                               ? col
                               : {
                                   ...col,
-                                  value: newValue,
+                                  val: newVal,
                                   fromInput: true
                                 }
                           )
@@ -109,7 +150,12 @@ function HidatoGrid() {
           marginTop: "1rem"
         }}
       >
-        <button onClick={() => solveHidato(getNonEmptyVisiblePoints(points))}>
+        <button
+          onClick={async () => {
+            let newPoints = await solveHidato(points, setState);
+            setState(newPoints);
+          }}
+        >
           Solve
         </button>
         <button
