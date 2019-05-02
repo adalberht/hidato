@@ -56,11 +56,12 @@ iterate(R_now, C_now, Val_now) :-
     iterate(R_next, C_next, Val_next), !.
 
 find_ans :-
-    ans(R, C, 1),
+    filled(R, C, 1),
     iterate(R, C, 1), !,
     assert(solved).
 
 clear :-
     retractall(solved),
     retractall(memo(_, _, _)),
-    retractall(ans(_, _, _)).
+    retractall(ans(_, _, _)),
+    retractall(filled(_, _, _)).
