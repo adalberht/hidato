@@ -1,6 +1,6 @@
 :- use_module(movement, [move/2]).
 :- use_module(validator, [valid/2, grid/2]).
-:- use_module(storage, [memo/3, ans/3, filled/3, reader/0]).
+:- use_module(storage, [memo/3, ans/3, reader/0]).
 
 :- dynamic solved/0.
 
@@ -56,12 +56,11 @@ iterate(R_now, C_now, Val_now) :-
     iterate(R_next, C_next, Val_next), !.
 
 find_ans :-
-    filled(R, C, 1),
+    retractall(solved),
+    ans(R, C, 1),
     iterate(R, C, 1), !,
     assert(solved).
 
 clear :-
-    retractall(solved),
     retractall(memo(_, _, _)),
-    retractall(ans(_, _, _)),
-    retractall(filled(_, _, _)).
+    retractall(ans(_, _, _)).
