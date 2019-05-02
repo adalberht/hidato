@@ -2,7 +2,7 @@
 :- use_module(validator, [valid/2, grid/2]).
 :- use_module(storage, [memo/3, ans/3, reader/0]).
 
-:- dynamic solved/1.
+:- dynamic solved/0.
 
 remove(40) :- !.
 
@@ -61,10 +61,10 @@ iterate(R_now, C_now, Val_now) :-
 find_ans :-
     ans(R, C, 1),
     iterate(R, C, 1), !,
-    assert(solved(1)).
+    assert(solved).
 
 
 clear :-
-    retractall(solved(_)),
+    retractall(solved),
     retractall(memo(_, _, _)),
     retractall(ans(_, _, _)).
