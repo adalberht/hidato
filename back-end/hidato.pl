@@ -1,6 +1,6 @@
 :- use_module(movement, [move/2]).
 :- use_module(validator, [valid/2, grid/2]).
-:- use_module(storage, [memo/3, ans/3, reader/0]).
+:- use_module(storage, [memo/3, ans/3, filled/3, reader/0]).
 
 :- dynamic solved/0.
 
