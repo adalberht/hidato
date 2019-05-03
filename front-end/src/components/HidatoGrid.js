@@ -3,6 +3,8 @@ import axios from "axios";
 
 import HidatoCell from "./HidatoCell";
 
+let URL = "http://hidato.herokuapp.com/solve";
+
 function generateInitialPoints() {
   const pointRangeForEveryRow = [
     { startX: 0, endX: 4 },
@@ -70,7 +72,7 @@ async function solveHidato(points) {
   if (!valid) return points;
 
   try {
-    const response = await axios.post("http://localhost:8000/solve", spec, {
+    const response = await axios.post(URL, spec, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
