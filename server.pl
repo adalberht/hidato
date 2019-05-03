@@ -4,7 +4,7 @@
 :- use_module(library(http/http_cors)).
 :- use_module(library(http/http_json)).
 :- (multifile user:file_search_path/2).
-:- consult(hidato).
+:- consult(hidato2).
 
 user:file_search_path(root_dir, 'build').
 
@@ -34,7 +34,7 @@ solve(Request):-
     http_read_json(Request, Data),
     fill_constraint(Data),
     find_ans,
-    findall(json([row=R, col=C, val=V]), ans(R, C, V), L),
+    findall(json([row=R, col=C, val=V]), ans(R, C, V), L),    
     reply_json(L),
     clear.
 
