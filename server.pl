@@ -34,7 +34,7 @@ solve(Request):-
     http_read_json(Request, Data),
     fill_constraint(Data),
     find_ans,
-    findall(json([row=R, col=C, val=V]), ans(R, C, V), L),
+    findall(json([row=R, col=C, val=V]), ans(R, C, V), L),    
     reply_json(L),
     clear.
 
