@@ -15,9 +15,9 @@ reader :-
     assert(ans(4, 1, 27)),
     assert(ans(4, 4, 6)),
     assert(ans(5, 6, 19)),
-    assert(ans(6, 3, 23)),
+    % assert(ans(6, 3, 23)),
     assert(ans(6, 6, 11)),
     assert(ans(7, 5, 9)),
-    assert(ans(7, 7, 16)),
+    % assert(ans(7, 7, 16)),
     assert(ans(8, 8, 14)).
     % assert(ans(8, 8, 25)).

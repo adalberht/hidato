@@ -4,7 +4,16 @@
 
 :- dynamic solved/0.
 
-iterate_ans(41).
+remove(40) :- !.
+
+remove(Now) :-
+    retractall(memo(_, _, Now)), !,
+    Next is Now + 1,
+    remove(Next).
+
+remove(_).
+
+iterate_ans(40) :- !.
 
 iterate_ans(Now) :-
     ans(_, _, Now), !,
@@ -17,40 +26,29 @@ iterate_ans(Now) :-
     Next is Now + 1,
     iterate_ans(Next).
 
-is_valid(R, C) :-
-    valid(R, C),
-    grid(R, C).
-
-assert(R, C, Val) :-
-    \+ memo(R, C, _),
-    assert(memo(R, C, Val)), !.
-
-assert(R, C, Val) :-
-    memo(R, C, X),
-    Val =< X,
-    retract(memo(R, C, X)),
-    assert(memo(R, C, Val)).
-
 iterate(_, _, 41) :-
     iterate_ans(1), !.
 
 iterate(R_now, C_now, Val_now) :-
-    retractall(memo(_, _, Val_now)),
+    remove(Val_now),
+    valid(R_now, C_now),
+    grid(R_now, C_now),
     ans(_, _, Val_now), !,
     ans(R_now, C_now, Val_now),
-    is_valid(R_now, C_now),
-    assert(R_now, C_now, Val_now),
+    assert(memo(R_now, C_now, Val_now)),
     move(R, C),
     R_next is R_now + R,
     C_next is C_now + C,
     Val_next is Val_now + 1,
-    iterate(R_next, C_next, Val_next), !.
+    iterate(R_next, C_next, Val_next).
 
 iterate(R_now, C_now, Val_now) :-
-    retractall(memo(_, _, Val_now)),
-    is_valid(R_now, C_now),
+    remove(Val_now),
+    valid(R_now, C_now),
+    grid(R_now, C_now),
+    \+ memo(R_now, C_now, _),
     \+ ans(R_now, C_now, _),
-    assert(R_now, C_now, Val_now),
+    assert(memo(R_now, C_now, Val_now)),
     move(R, C),
     R_next is R_now + R,
     C_next is C_now + C,
