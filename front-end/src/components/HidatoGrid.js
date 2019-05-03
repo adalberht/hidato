@@ -3,6 +3,8 @@ import axios from "axios";
 
 import HidatoCell from "./HidatoCell";
 
+let URL = "http://hidato.herokuapp.com/solve";
+
 function generateInitialPoints() {
   const pointRangeForEveryRow = [
     { startX: 0, endX: 4 },
@@ -50,27 +52,23 @@ async function solveHidato(points) {
   const uniqueValues = getSetOfInputtedValues(spec);
 
   let valid = true;
+  spec.sort((a, b) => a.val - b.val);
+
   if (uniqueValues.size !== spec.length) {
     window.alert("Input should be unique. There is duplicate element");
     valid = false;
-  }
-
-  spec.sort((a, b) => a.val - b.val);
-
-  if (spec.length < 15) {
-    window.alert("You should provide a minimum of 15 numbers");
+  } else if (spec.length < 12) {
+    window.alert("You should provide a minimum of 12 numbers");
     valid = false;
-  }
-
-  if (spec[0].val !== 1 || spec[spec.length - 1].val !== 40) {
+  } else if (spec[0].val !== 1 || spec[spec.length - 1].val !== 40) {
     window.alert("Please input 1 and 40");
     valid = false;
   }
 
-  if (!valid) return points;
+  if (!valid) return { points };
 
   try {
-    const response = await axios.post("http://localhost:8000/solve", spec, {
+    const response = await axios.post(URL, spec, {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
@@ -94,15 +92,24 @@ async function solveHidato(points) {
         val: mat[point.row][point.col]
       }))
     );
-    return points;
+    return { points };
   } catch (e) {
-    window.alert("Error: " + e);
-    return points;
+    let unsolvable = false;
+    if (e.response && e.response.status == 500) {
+      unsolvable = true;
+    }
+    if (!unsolvable) {
+      window.alert("Error: ", e);
+    }
+    return { points, unsolvable };
   }
 }
 
 function HidatoGrid() {
   const [points, setState] = useState(generateInitialPoints());
+  const [loading, setLoading] = useState(false);
+  const [solved, setSolved] = useState(false);
+  const [unsolvable, setUnsolvable] = useState(false);
   return (
     <React.Fragment>
       <div
@@ -141,6 +148,11 @@ function HidatoGrid() {
           []
         )}
       </div>
+      {unsolvable && (
+        <h4>
+          Given Puzzle is unsolvable. Please Clear and input different puzzle.
+        </h4>
+      )}
       <div
         style={{
           display: "flex",
@@ -150,21 +162,37 @@ function HidatoGrid() {
           marginTop: "1rem"
         }}
       >
-        <button
-          onClick={async () => {
-            let newPoints = await solveHidato(points, setState);
-            setState(newPoints);
-          }}
-        >
-          Solve
-        </button>
+        {!solved && (
+          <button
+            onClick={async () => {
+              setLoading(true);
+              let { points: newPoints, unsolvable } = await solveHidato(
+                points,
+                setState
+              );
+              setSolved(true);
+              setState(newPoints);
+              setLoading(false);
+              if (unsolvable) {
+                setUnsolvable(true);
+              }
+            }}
+          >
+            Solve
+          </button>
+        )}
         <button
           style={{ marginLeft: "1rem" }}
-          onClick={() => setState(generateInitialPoints())}
+          onClick={() => {
+            setState(generateInitialPoints());
+            setSolved(false);
+            setUnsolvable(false);
+          }}
         >
           Clear
         </button>
       </div>
+      {loading && <h4>Solving... Please Wait.</h4>}
     </React.Fragment>
   );
 }
