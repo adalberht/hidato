@@ -35,7 +35,7 @@ async function solveHidato(points) {
   function getNonEmptyVisiblePoints(points) {
     return points.reduce((prev, curr) => {
       const nonEmptyVisiblePoints = curr.filter(point => {
-        return point.visible && point.val != "";
+        return point.fromInput && point.visible && point.val != "";
       });
       return prev.concat(
         nonEmptyVisiblePoints.map(point => ({
@@ -108,7 +108,6 @@ async function solveHidato(points) {
 function HidatoGrid() {
   const [points, setState] = useState(generateInitialPoints());
   const [loading, setLoading] = useState(false);
-  const [solved, setSolved] = useState(false);
   const [unsolvable, setUnsolvable] = useState(false);
   return (
     <React.Fragment>
@@ -162,30 +161,26 @@ function HidatoGrid() {
           marginTop: "1rem"
         }}
       >
-        {!solved && (
-          <button
-            onClick={async () => {
-              setLoading(true);
-              let { points: newPoints, unsolvable } = await solveHidato(
-                points,
-                setState
-              );
-              setSolved(true);
-              setState(newPoints);
-              setLoading(false);
-              if (unsolvable) {
-                setUnsolvable(true);
-              }
-            }}
-          >
-            Solve
-          </button>
-        )}
+        <button
+          onClick={async () => {
+            setLoading(true);
+            let { points: newPoints, unsolvable } = await solveHidato(
+              points,
+              setState
+            );
+            setState(newPoints);
+            setLoading(false);
+            if (unsolvable) {
+              setUnsolvable(true);
+            }
+          }}
+        >
+          Solve
+        </button>
         <button
           style={{ marginLeft: "1rem" }}
           onClick={() => {
             setState(generateInitialPoints());
-            setSolved(false);
             setUnsolvable(false);
           }}
         >
