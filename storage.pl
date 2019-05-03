@@ -1,25 +1,23 @@
 :- module(storage, 
-    [memo/3, ans/3, filled/3, reader/0]).
+    [memo/3, ans/3, reader/0]).
 
 :- dynamic memo/3.
 :- dynamic ans/3.
-:- dynamic filled/3.
 
 % buat test internal
 reader :-
-    assert(filled(1, 1, 38)),
-    assert(filled(1, 3, 40)),
-    assert(filled(1, 5, 6)),
-    assert(filled(2, 2, 39)),
-    assert(filled(2, 4, 7)),
-    assert(filled(3, 3, 11)),
-    assert(filled(4, 2, 1)),
-    assert(filled(4, 4, 9)),
-    assert(filled(5, 6, 17)),
-    assert(filled(6, 3, 31)),
-    assert(filled(6, 4, 27)),
-    assert(filled(7, 5, 25)),
-    assert(filled(7, 6, 23)),
-    assert(filled(7, 7, 22)),
-    assert(filled(8, 8, 21)),
-    assert(filled(9, 9, 10)).
+    assert(ans(1, 3, 7)),
+    assert(ans(2, 2, 10)),
+    assert(ans(2, 4, 3)),
+    assert(ans(3, 2, 14)),
+    assert(ans(3, 3, 40)),
+    assert(ans(3, 5, 1)),
+    assert(ans(4, 2, 13)),
+    assert(ans(4, 3, 38)),
+    assert(ans(4, 6, 31)),
+    assert(ans(5, 5, 36)),
+    assert(ans(5, 7, 29)),
+    assert(ans(6, 3, 19)),
+    assert(ans(7, 6, 23)),
+    assert(ans(7, 7, 27)),
+    assert(ans(8, 8, 25)).

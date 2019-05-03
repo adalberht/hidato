@@ -19,7 +19,7 @@ server(Port) :-
 fill_constraint([]).
 fill_constraint([H|T]):-
     H=json([row=R, col=C, val=V]),
-    assert(filled(R, C, V)),
+    assert(ans(R, C, V)),
     fill_constraint(T).
 
 solve(Request) :-
