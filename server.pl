@@ -4,7 +4,7 @@
 :- use_module(library(http/http_cors)).
 :- use_module(library(http/http_json)).
 :- (multifile user:file_search_path/2).
-:- consult(hidato).
+:- consult(hidato2).
 
 user:file_search_path(root_dir, 'build').
 
